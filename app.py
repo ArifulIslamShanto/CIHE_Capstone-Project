@@ -128,81 +128,81 @@ def send_email(to_email, subject, body):
 
 
 # ---------- LOGIN + OTP FLOW ----------
-@app.route("/api/login", methods=["POST"])
-def api_login():
-    data = request.get_json(force=True)
-    username = data.get("username", "").strip()
-    password = data.get("password", "").strip()
+# @app.route("/api/login", methods=["POST"])
+# def api_login():
+#     data = request.get_json(force=True)
+#     username = data.get("username", "").strip()
+#     password = data.get("password", "").strip()
 
-    if not username or not password:
-        return jsonify({"ok": False, "error": "Username and password required"}), 400
+#     if not username or not password:
+#         return jsonify({"ok": False, "error": "Username and password required"}), 400
 
-    user = get_user_by_username(username)
-    if not user:
-        return jsonify({"ok": False, "error": "Invalid username or password"}), 401
+#     user = get_user_by_username(username)
+#     if not user:
+#         return jsonify({"ok": False, "error": "Invalid username or password"}), 401
 
-    # Verify password
-    if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
-        return jsonify({"ok": False, "error": "Invalid username or password"}), 401
+#     # Verify password
+#     if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
+#         return jsonify({"ok": False, "error": "Invalid username or password"}), 401
 
-    # Generate OTP
-    otp = f"{random.randint(100000, 999999)}"
+#     # Generate OTP
+#     otp = f"{random.randint(100000, 999999)}"
 
-    # Save OTP in DB
-    conn = get_db_connection()
-    try:
-        cur = conn.cursor()
-        generated = datetime.now()
-        expiry = generated + timedelta(minutes=5)
-        cur.execute(
-            "INSERT INTO otp_codes (user_id, otp, generated_timestamp) VALUES (%s, %s, %s)",
-            (user["id"], otp, generated)
-        )
-        conn.commit()
-    finally:
-        cur.close(); conn.close()
+#     # Save OTP in DB
+#     conn = get_db_connection()
+#     try:
+#         cur = conn.cursor()
+#         generated = datetime.now()
+#         expiry = generated + timedelta(minutes=5)
+#         cur.execute(
+#             "INSERT INTO otp_codes (user_id, otp, generated_timestamp) VALUES (%s, %s, %s)",
+#             (user["id"], otp, generated)
+#         )
+#         conn.commit()
+#     finally:
+#         cur.close(); conn.close()
 
-    # Send OTP via email
-    try:
-        send_email(user["email"], "Your Login OTP", f"Your OTP is {otp}. It will expire in 5 minutes.")
-    except Exception as e:
-        return jsonify({"ok": False, "error": f"Failed to send OTP: {e}"}), 500
+#     # Send OTP via email
+#     try:
+#         send_email(user["email"], "Your Login OTP", f"Your OTP is {otp}. It will expire in 5 minutes.")
+#     except Exception as e:
+#         return jsonify({"ok": False, "error": f"Failed to send OTP: {e}"}), 500
 
-    # Forward to OTP entry page
-    return jsonify({"ok": True, "message": "OTP sent", "redirect": "otp-page"})
+#     # Forward to OTP entry page
+#     return jsonify({"ok": True, "message": "OTP sent", "redirect": "otp-page"})
 
 
-@app.route("/api/verify_otp", methods=["POST"])
-def verify_otp():
-    data = request.get_json(force=True)
-    otp = data.get("otp", "").strip()
+# @app.route("/api/verify_otp", methods=["POST"])
+# def verify_otp():
+#     data = request.get_json(force=True)
+#     otp = data.get("otp", "").strip()
 
-    if not otp:
-        return jsonify({"ok": False, "error": "OTP required"}), 400
+#     if not otp:
+#         return jsonify({"ok": False, "error": "OTP required"}), 400
 
-    conn = get_db_connection()
-    try:
-        cur = conn.cursor(dictionary=True)
-        cur.execute("""
-            SELECT o.id, o.user_id, o.otp, o.generated_timestamp,
-                   (o.generated_timestamp + INTERVAL 5 MINUTE) AS expiry
-            FROM otp_codes o
-            WHERE o.otp=%s
-            ORDER BY o.generated_timestamp DESC
-            LIMIT 1
-        """, (otp,))
-        row = cur.fetchone()
-    finally:
-        cur.close(); conn.close()
+#     conn = get_db_connection()
+#     try:
+#         cur = conn.cursor(dictionary=True)
+#         cur.execute("""
+#             SELECT o.id, o.user_id, o.otp, o.generated_timestamp,
+#                    (o.generated_timestamp + INTERVAL 5 MINUTE) AS expiry
+#             FROM otp_codes o
+#             WHERE o.otp=%s
+#             ORDER BY o.generated_timestamp DESC
+#             LIMIT 1
+#         """, (otp,))
+#         row = cur.fetchone()
+#     finally:
+#         cur.close(); conn.close()
 
-    if not row:
-        return jsonify({"ok": False, "error": "Invalid OTP"}), 401
+#     if not row:
+#         return jsonify({"ok": False, "error": "Invalid OTP"}), 401
 
-    now = datetime.now()
-    if now > row["expiry"]:
-        return jsonify({"ok": False, "error": "OTP expired"}), 401
+#     now = datetime.now()
+#     if now > row["expiry"]:
+#         return jsonify({"ok": False, "error": "OTP expired"}), 401
 
-    return jsonify({"ok": True, "message": "OTP verified", "user_id": row["user_id"]})
+#     return jsonify({"ok": True, "message": "OTP verified", "user_id": row["user_id"]})
 
 
 # ---------- Routes ----------
@@ -312,3 +312,4 @@ def finalize():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
