@@ -1,0 +1,104 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+  }
+  .login-container {
+    max-width: auto;
+    margin: auto;
+    padding: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .login-left {
+    flex: 1;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .login-left img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+  .login-right {
+    flex: 1;
+    margin: auto;
+    padding: auto;
+    position: relative;
+  }
+  .btn-login {
+    background-color: #28a745;
+    border: none;
+    border-radius: 50px;
+    padding: 12px;
+  }
+  .btn-login:hover {
+    background-color: #218838;
+  }
+  .form-control {
+    border-radius: 50px;
+    padding: 12px 20px;
+  }
+  .toggle-buttons {
+    background-color: #28a7462c;
+    border-radius: 50px;
+    padding: 5px;
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .toggle-buttons a {
+    flex: 1;
+    border: none;
+    background: none;
+    color: rgba(0, 0, 0, 0.729);
+    padding: 10px;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .toggle-buttons .active {
+    background-color: white;
+    color: #28a745;
+  }
+
+  #logo{
+    height: 40px;
+    right: 10px;
+    margin-bottom: 15px;
+  }
+  .otp-input {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+    text-align: center;
+    margin: 0 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+  .otp-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  .home-container {
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 60px;
+    text-align: center;
+  }
+  .home-card {
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin: 20px 0;
+  }
+  .btn-custom {
+    border-radius: 50px;
+    padding: 12px 25px;
+    margin: 10px;
+  }
